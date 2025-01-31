@@ -1,4 +1,4 @@
-def SOLUTION_NAME = 'CommonCppModules.sln'
+def SOLUTION_NAME = 'CommonLibsCpp.sln'
 
 pipeline {
     agent any

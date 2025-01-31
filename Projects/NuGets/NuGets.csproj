@@ -3,7 +3,7 @@
   <PropertyGroup>
     <ProjectGuid>{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}</ProjectGuid>
     <ArtifactsDirectory Condition=" '$(ArtifactsDirectory)' == '' or !Exists('$(ArtifactsDirectory)') ">$(SolutionDir)artifacts\</ArtifactsDirectory>
-    <ReleaseNotesFileName>Common-Cpp-Libs-Release-Notes.md</ReleaseNotesFileName>
+    <ReleaseNotesFileName>Common-Cpp-Release-Libs-Notes.md</ReleaseNotesFileName>
     <SkipCopyingSymbolsToOutputDirectory>true</SkipCopyingSymbolsToOutputDirectory>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
