@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<package>
+    <metadata>
+        <id>CommonCppModules</id>
+        <version>$version$</version>
+        <title>CommonCppModules</title>
+        <authors>Eduard Danziger</authors>
+        <owners>ED</owners>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>CIM XFS Serializer Header-only Lib</description>
+        <copyright>Copyright 2024-2025</copyright>
+        <tags>native, XFS</tags>
+        <dependencies>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="TimeUtils.h" target="\lib\native\include\" />
+        <file src="PrefixStream.h" target="\lib\native\include\" />
+        <file src="any_string_array.h" target="\lib\native\include\" />
+        <file src="CommonCppModules.targets" target="\build\native\" />
+    </files>
+</package>

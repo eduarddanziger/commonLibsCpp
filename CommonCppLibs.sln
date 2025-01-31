@@ -1,0 +1,47 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{318E5C0B-095D-4943-8A7A-2A994D5985CF}"
+	ProjectSection(SolutionItems) = preProject
+		after.CommonCppLibs.sln.targets = after.CommonCppLibs.sln.targets
+		Common-Cpp-Libs-Release-Notes.md = Common-Cpp-Libs-Release-Notes.md
+		Jenkinsfile = Jenkinsfile
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGets", "Projects\NuGets\NuGets.csproj", "{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpdLogger", "Projects\SpdLogger\SpdLogger.vcxproj", "{3C838F29-82E2-4953-926D-02CCDFDEAF80}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CommonCppModules", "Projects\CommonCppModules\CommonCppModules.vcxproj", "{D5357AC6-569A-4DD3-991E-41115C35C608}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}.Debug|x64.ActiveCfg = Debug|x86
+		{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}.Debug|x64.Build.0 = Debug|x86
+		{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}.Release|x64.ActiveCfg = Release|x86
+		{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}.Release|x64.Build.0 = Release|x86
+		{3C838F29-82E2-4953-926D-02CCDFDEAF80}.Debug|x64.ActiveCfg = Debug|x64
+		{3C838F29-82E2-4953-926D-02CCDFDEAF80}.Debug|x64.Build.0 = Debug|x64
+		{3C838F29-82E2-4953-926D-02CCDFDEAF80}.Release|x64.ActiveCfg = Release|x64
+		{3C838F29-82E2-4953-926D-02CCDFDEAF80}.Release|x64.Build.0 = Release|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Debug|x64.ActiveCfg = Debug|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Debug|x64.Build.0 = Debug|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Debug|x64.Deploy.0 = Debug|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Release|x64.ActiveCfg = Release|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Release|x64.Build.0 = Release|x64
+		{D5357AC6-569A-4DD3-991E-41115C35C608}.Release|x64.Deploy.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		        SolutionGuid = {52D03EF5-C1D6-4424-B823-0AC024D450B2}
+		SolutionGuid = {EE1751E0-E2FB-4AC5-89AD-FFBF324DF18A}
+	EndGlobalSection
+EndGlobal

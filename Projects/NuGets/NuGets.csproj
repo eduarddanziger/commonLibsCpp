@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{67A184DD-57A6-4AA1-B0F2-CEEBD9B00A01}</ProjectGuid>
+    <ArtifactsDirectory Condition=" '$(ArtifactsDirectory)' == '' or !Exists('$(ArtifactsDirectory)') ">$(SolutionDir)artifacts\</ArtifactsDirectory>
+    <ReleaseNotesFileName>Common-Cpp-Libs-Release-Notes.md</ReleaseNotesFileName>
+    <SkipCopyingSymbolsToOutputDirectory>true</SkipCopyingSymbolsToOutputDirectory>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.Common.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.NuGet.props" />
+  <ItemGroup>
+    <ProjectReference Include="..\SpdLogger\SpdLogger.vcxproj">
+      <Project>{3c838f29-82e2-4953-926d-02ccdfdeaf80}</Project>
+      <Name>SpdLogger</Name>
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <Private>False</Private>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ID>SpdLogger</ID>
+    </ProjectReference>
+    <ProjectReference Include="..\CommonCppModules\CommonCppModules.vcxproj">
+      <Project>{d5357ac6-569a-4dd3-991e-41115c35c608}</Project>
+      <Name>CommonCppModules</Name>
+      <Configuration>$(Configuration)</Configuration>
+      <Platform>$(Platform)</Platform>
+      <Private>False</Private>
+      <ReferenceOutputAssembly>False</ReferenceOutputAssembly>
+      <OutputItemType>Content</OutputItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <ID>CommonCppModules</ID>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.PackReferences.targets" />
+  <Target Name="Deploy" DependsOnTargets="DeployPackages" />
+  <Target Name="SubstituteConfigurationAndVersion" BeforeTargets="CoreCompile" DependsOnTargets="QueryVersion;ResolveNuGetArguments">
+    <ItemGroup>
+      <ProjectReferenceWithConfiguration>
+        <Arguments>-Properties Configuration=$(Configuration) -Version $(PackageVersion) %(Filename).nuspec</Arguments>
+      </ProjectReferenceWithConfiguration>
+    </ItemGroup>
+  </Target>
+  <Target Name="ResolveIntermediateAssembly01" BeforeTargets="ResolveIntermediateAssembly" DependsOnTargets="ResolveProjectReferences">
+    <ItemGroup>
+      <IntermediateAssembly Remove="@(IntermediateAssembly)" />
+      <IntermediateAssembly Include="@(ProjectReferenceWithConfiguration->'obj\$(Platform)\$(Configuration)\%(ID).$(PackageVersion).nupkg')" />
+    </ItemGroup>
+    <PropertyGroup>
+      <IntermediateAssemblyDone>True</IntermediateAssemblyDone>
+    </PropertyGroup>
+  </Target>
+  <Target Name="CopyFilesAndProcessReleaseNotes" AfterTargets="Build" DependsOnTargets="ResolveArtifactFileName">
+    <PropertyGroup>
+      <ReleaseNotesTargetPathName>$(ArtifactsDirectory)$(ReleaseNotesFileName)</ReleaseNotesTargetPathName>
+    </PropertyGroup>
+    <Copy SourceFiles="$(SolutionDir)$(ReleaseNotesFileName)" DestinationFolder="$(ArtifactsDirectory)" />
+    <FileUpdate Files="$(ReleaseNotesTargetPathName)" Regex="\$version\$" ReplacementText="$(PackageVersion)" />
+    <Time Format="dd.MM.yyyy">
+      <Output TaskParameter="FormattedTime" PropertyName="BuildDate" />
+    </Time>
+    <FileUpdate Files="$(ReleaseNotesTargetPathName)" Regex="\$date\$" ReplacementText="$(BuildDate)" />
+    <ItemGroup>
+      <Artifacts Include="$(IntermediateOutputPath)*.nupkg" />
+    </ItemGroup>
+    <Copy SourceFiles="@(Artifacts)" DestinationFolder="$(ArtifactsDirectory)" />
+  </Target>
+  <Import Project="..\..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
+  </Target>
+</Project>
