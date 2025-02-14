@@ -5,8 +5,10 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{318E5C0B-095D-4943-8A7A-2A994D5985CF}"
 	ProjectSection(SolutionItems) = preProject
-		after.CommonCppLibs.sln.targets = after.CommonCppLibs.sln.targets
-		Common-Cpp-Libs-Release-Notes.md = Common-Cpp-Libs-Release-Notes.md
+		.gitignore = .gitignore
+		after.CommonLibsCpp.sln.targets = after.CommonLibsCpp.sln.targets
+		Common-Libs-Cpp-Release-Notes.md = Common-Libs-Cpp-Release-Notes.md
+		CommonLibsCpp.sln.DotSettings = CommonLibsCpp.sln.DotSettings
 		Jenkinsfile = Jenkinsfile
 		README.md = README.md
 	EndProjectSection
@@ -42,7 +44,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EE1751E0-E2FB-4AC5-89AD-FFBF324DF18A}
 		        SolutionGuid = {52D03EF5-C1D6-4424-B823-0AC024D450B2}
+		SolutionGuid = {EE1751E0-E2FB-4AC5-89AD-FFBF324DF18A}
 	EndGlobalSection
 EndGlobal
