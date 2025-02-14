@@ -8,6 +8,7 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <WixNuGetPackagerDownloadNuGetExe>true</WixNuGetPackagerDownloadNuGetExe>
+    <_WixNuGetPackager_DownloadedNuGetExePath Condition=" $(GITHUB_ACTIONS) == 'true' ">C:\Program Files\NuGet\nuget.exe</_WixNuGetPackager_DownloadedNuGetExePath>
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.Common.props" />
   <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.NuGet.props" />
