@@ -7,6 +7,7 @@
     <SkipCopyingSymbolsToOutputDirectory>true</SkipCopyingSymbolsToOutputDirectory>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <WixNuGetPackagerDownloadNuGetExe>true</WixNuGetPackagerDownloadNuGetExe>
   </PropertyGroup>
   <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.Common.props" />
   <Import Project="$(MSBuildThisFileDirectory)..\..\msbuildLibCpp\Ed.NuGet.props" />
