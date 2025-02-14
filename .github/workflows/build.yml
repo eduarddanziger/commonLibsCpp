@@ -1,0 +1,28 @@
+name: Build and Publish NuGet
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Configure MSBuild
+      run: nuget restore CommonLibsCpp.sln
+
+    - name: Build with MSBuild
+      run: msbuild /t:ValidateSolution /p:Configuration=Release
+
+    - name: Publish NuGet
+      env:
+        NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+      run: nuget push artifacts/*.nupkg -Source https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json -ApiKey $NUGET_API_KEY
