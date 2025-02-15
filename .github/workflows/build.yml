@@ -21,11 +21,22 @@ jobs:
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1
 
+    - name: Add GitHub Packages NuGet source
+      run: |
+        dotnet nuget add source https://nuget.pkg.github.com/eduarddanziger/index.json \
+          --name github \
+          --username eduarddanziger \
+          --password ${{ secrets.NUGET_AUTH_TOKEN }} \
+          --store-password-in-clear-text
+
     - name: Configure MSBuild
       run: nuget restore CommonLibsCpp.sln
 
     - name: Build with MSBuild
       run: msbuild /t:ValidateSolution /p:Configuration=Release
 
-    - name: Publish NuGet
-      run: nuget push artifacts/*.nupkg -Source https://nuget.pkg.github.com/eduarddanziger/index.json -ApiKey ${{ secrets.NUGET_KEY }}
+    - name: Push the NuGet package
+      run: |
+        dotnet nuget push artifacts/*.nupkg \
+          --source https://nuget.pkg.github.com/eduarddanziger/index.json \
+          --api-key ${{ secrets.NUGET_AUTH_TOKEN }}
