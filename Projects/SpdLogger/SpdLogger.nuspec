@@ -7,9 +7,10 @@
     <authors>Eduard Danziger</authors>
     <owners>ED</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>SpdLogger Helper Lib</description>
-    <copyright>Copyright 2024-2025</copyright>
-    <tags>native, Logger, cpp</tags>
+    <description>SpdLogger helper lib</description>
+	<copyright>Copyright 2024-2025</copyright>
+	<tags>native, XFS</tags>
+	<repository type="git" url="https://github.com/eduarddanziger/commonLibsCpp" />
     <dependencies>
     </dependencies>
   </metadata>
