@@ -28,4 +28,4 @@ jobs:
       run: msbuild /t:ValidateSolution /p:Configuration=Release
 
     - name: Publish NuGet
-      run: nuget push artifacts/*.nupkg -Source https://nuget.pkg.github.com/${{ github.repository }}/index.json -ApiKey ${{ secrets.NUGET_API_KEY }}
+      run: nuget push artifacts/*.nupkg -Source https://nuget.pkg.github.com/eduarddanziger/index.json -ApiKey ${{ secrets.NUGET_API_KEY }}
