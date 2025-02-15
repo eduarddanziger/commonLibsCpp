@@ -22,11 +22,12 @@ jobs:
       uses: microsoft/setup-msbuild@v1
 
     - name: Add GitHub Packages NuGet source
+      shell: pwsh
       run: |
-        dotnet nuget add source https://nuget.pkg.github.com/eduarddanziger/index.json \
-          --name github \
-          --username eduarddanziger \
-          --password ${{ secrets.NUGET_AUTH_TOKEN }} \
+        dotnet nuget add source https://nuget.pkg.github.com/eduarddanziger/index.json `
+          --name github `
+          --username eduarddanziger `
+          --password ${{ secrets.NUGET_AUTH_TOKEN }} `
           --store-password-in-clear-text
 
     - name: Configure MSBuild
@@ -36,7 +37,8 @@ jobs:
       run: msbuild /t:ValidateSolution /p:Configuration=Release
 
     - name: Push the NuGet package
+      shell: pwsh
       run: |
-        dotnet nuget push artifacts/*.nupkg \
-          --source https://nuget.pkg.github.com/eduarddanziger/index.json \
+        dotnet nuget push artifacts/*.nupkg `
+          --source https://nuget.pkg.github.com/eduarddanziger/index.json `
           --api-key ${{ secrets.NUGET_AUTH_TOKEN }}
