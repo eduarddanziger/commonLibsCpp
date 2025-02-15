@@ -39,6 +39,8 @@ jobs:
     - name: Push the NuGet package
       shell: pwsh
       run: |
-        dotnet nuget push artifacts/*.nupkg `
-          --source https://nuget.pkg.github.com/eduarddanziger/index.json `
-          --api-key ${{ secrets.NUGET_AUTH_TOKEN }}
+        Get-ChildItem artifacts\*.nupkg | ForEach-Object { 
+        dotnet nuget push $_.FullName `
+            --source "https://nuget.pkg.github.com/eduarddanziger/index.json" `
+            --api-key ${{ secrets.NUGET_AUTH_TOKEN }}
+        }
