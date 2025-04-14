@@ -44,7 +44,7 @@ jobs:
     - name: Push NuGet to GitHub Packages
       env:
         NUGET_SOURCE: https://nuget.pkg.github.com/eduarddanziger/index.json
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
       run: |
         Get-ChildItem artifacts\*.nupkg | ForEach-Object { 
           dotnet nuget push $_.FullName `
