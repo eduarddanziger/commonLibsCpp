@@ -41,11 +41,13 @@ jobs:
     - name: Build with MSBuild
       run: msbuild /t:ValidateSolution /p:Configuration=Release
 
-    - name: Push the NuGet package
-      shell: pwsh
+    - name: Push NuGet to GitHub Packages
+      env:
+        NUGET_SOURCE: https://nuget.pkg.github.com/eduarddanziger/index.json
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         Get-ChildItem artifacts\*.nupkg | ForEach-Object { 
-        dotnet nuget push $_.FullName `
-            --source "https://nuget.pkg.github.com/eduarddanziger/index.json" `
-            --api-key ${{ secrets.NUGET_AUTH_TOKEN }}
+          dotnet nuget push $_.FullName `
+              --source "$env:NUGET_SOURCE" `
+              --api-key "$env:GITHUB_TOKEN"
         }
