@@ -48,6 +48,6 @@
   <ItemGroup>
     <None Include="SpdLogger.nuspec" />
     <None Include="SpdLogger.targets" />
-    <None Include="packages.config" />
+    <None Include="vcpkg.json" />
   </ItemGroup>
 </Project>
