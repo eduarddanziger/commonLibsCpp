@@ -45,6 +45,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="any_string_array.h" />
+    <ClInclude Include="StringUtils.h" />
     <ClInclude Include="TimeUtils.h" />
     <ClInclude Include="PrefixStream.h" />
     <ClInclude Include="stdafx.h" />

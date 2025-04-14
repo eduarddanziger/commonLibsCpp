@@ -11,42 +11,42 @@ namespace chr = std::chrono;
 
 namespace ed
 {
-	template<typename Test, template<typename...> class Ref>
-	struct IsSpecialization : std::false_type {};
-	template<template<typename...> class Ref, typename... Args>
-	struct IsSpecialization<Ref<Args...>, Ref> : std::true_type {};
+	template<typename Test_, template<typename...> class Ref_>
+		struct IsSpecialization : std::false_type {};
+	template<template<typename...> class Ref_, typename... Args_>
+		struct IsSpecialization<Ref_<Args_...>, Ref_> : std::true_type {};
 
-	template <class Duration >
-	using IsDuration = IsSpecialization<Duration, std::chrono::duration>;
+	template <class Duration_ >
+		using IsDuration = IsSpecialization<Duration_, std::chrono::duration>;
 
 	template<class, class = void>
-	struct IsClock : std::false_type {};
-	template<class Clock>
-	struct IsClock<Clock, std::void_t<typename Clock::rep, typename Clock::period, typename Clock::duration,
-		typename Clock::time_point, decltype(Clock::is_steady), decltype(Clock::now())>> : public std::true_type {};
+		struct IsClock : std::false_type {};
+	template<class Clock_>
+		struct IsClock<Clock_, std::void_t<typename Clock_::rep, typename Clock_::period, typename Clock_::duration,
+			typename Clock_::time_point, decltype(Clock_::is_steady), decltype(Clock_::now())>> : std::true_type {};
 
-	template<typename Clock, class Duration = typename Clock::duration>
-	[[nodiscard]] time_t to_time_t(const std::chrono::time_point<Clock, Duration>& time) noexcept {
-		static_assert(IsClock<Clock>::value, "The given type for Clock_ does not fulfill the requirements of a clock.");
+	template<typename Clock_, class Duration = typename Clock_::duration>
+	[[nodiscard]] time_t to_time_t(const std::chrono::time_point<Clock_, Duration>& time) noexcept {
+		static_assert(IsClock<Clock_>::value, "The given type for Clock_ does not fulfill the requirements of a clock.");
 		static_assert(IsDuration<Duration>::value, "The given type for Duration is not of std::chrono::duration.");
-		static const long long offset = std::is_same_v< Clock, std::chrono::system_clock> ? 0
+		static const long long offset = std::is_same_v< Clock_, std::chrono::system_clock> ? 0
 			: (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::time_point().time_since_epoch()).count()
-				- std::chrono::duration_cast<std::chrono::seconds>(Clock::time_point().time_since_epoch()).count());
+				- std::chrono::duration_cast<std::chrono::seconds>(Clock_::time_point().time_since_epoch()).count());
 		return std::chrono::duration_cast<std::chrono::seconds>(time.time_since_epoch()).count() + offset;
 	}
 
-	template<typename Clock, class Duration = typename Clock::duration>
-	[[nodiscard]] std::chrono::time_point<Clock, Duration> from_time_t(time_t time) noexcept {
-		static_assert(IsClock<Clock>::value, "The given type for Clock_ does not fulfill the requirements of a clock.");
-		static_assert(IsDuration<Duration>::value, "The given type for Duration is not of std::chrono::duration.");
-		static const long long offset = std::is_same_v< Clock, std::chrono::system_clock> ? 0
+	template<typename Clock_, class Duration_ = typename Clock_::duration>
+	[[nodiscard]] std::chrono::time_point<Clock_, Duration_> from_time_t(time_t time) noexcept {
+		static_assert(IsClock<Clock_>::value, "The given type for Clock_ does not fulfill the requirements of a clock.");
+		static_assert(IsDuration<Duration_>::value, "The given type for Duration is not of std::chrono::duration.");
+		static const long long offset = std::is_same_v< Clock_, std::chrono::system_clock> ? 0
 			: (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::time_point().time_since_epoch()).count()
-				- std::chrono::duration_cast<std::chrono::seconds>(Clock::time_point().time_since_epoch()).count());
-		return std::chrono::time_point<Clock, Duration>{ std::chrono::duration_cast<Duration>(std::chrono::seconds{ time - offset }) };
+				- std::chrono::duration_cast<std::chrono::seconds>(Clock_::time_point().time_since_epoch()).count());
+		return std::chrono::time_point<Clock_, Duration_>{ std::chrono::duration_cast<Duration_>(std::chrono::seconds{ time - offset }) };
 	}
 
-	template<typename Char_, typename Clock_, class Duration = typename Clock_::duration>
-	std::basic_string<Char_> systemTimeToStringWithLocalTime(const std::chrono::time_point<Clock_, Duration>& time, const std::basic_string<Char_>& betweenDateAndTime)
+	template<typename Char_, typename Clock_, class Duration_ = typename Clock_::duration>
+	std::basic_string<Char_> systemTimeToStringWithLocalTime(const std::chrono::time_point<Clock_, Duration_>& time, const std::basic_string<Char_>& betweenDateAndTime)
 	{
 		const time_t timeT = to_time_t(time);
 
@@ -82,8 +82,8 @@ namespace ed
 		return oss.str();
 	}
 
-	template<typename Clock_, class Duration = typename Clock_::duration>
-	[[nodiscard]] std::string systemTimeAsStringWithLocalTime(const std::chrono::time_point<Clock_, Duration>& time, const std::string& betweenDateAndTime = " ")
+	template<typename Clock_, class Duration_ = typename Clock_::duration>
+	[[nodiscard]] std::string systemTimeAsStringWithLocalTime(const std::chrono::time_point<Clock_, Duration_>& time, const std::string& betweenDateAndTime = " ")
 	{
 		return systemTimeToStringWithLocalTime(time, betweenDateAndTime);
 	}
@@ -93,8 +93,8 @@ namespace ed
 		return systemTimeAsStringWithLocalTime(chr::system_clock::now(), betweenDateAndTime);
 	}
 
-	template<typename Clock, class Duration = typename Clock::duration>
-	[[nodiscard]] std::wstring systemTimeAsWideStringWithLocalTime(const std::chrono::time_point<Clock, Duration>& time, const std::wstring& betweenDateAndTime = L" ")
+	template<typename Clock_, class Duration_ = typename Clock_::duration>
+	[[nodiscard]] std::wstring systemTimeAsWideStringWithLocalTime(const std::chrono::time_point<Clock_, Duration_>& time, const std::wstring& betweenDateAndTime = L" ")
 	{
 		return systemTimeToStringWithLocalTime(time, betweenDateAndTime);
 	}
