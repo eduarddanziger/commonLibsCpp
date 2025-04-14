@@ -32,7 +32,7 @@ jobs:
           --password ${{ secrets.NUGET_AUTH_TOKEN }} `
           --store-password-in-clear-text
 
-    - name: Configure MSBuild
+    - name: Restore NuGet packages
       run: nuget restore CommonLibsCpp.sln
 
     - name: Integrate vcpkg with MSBuild
