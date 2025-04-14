@@ -7,9 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		after.CommonLibsCpp.sln.targets = after.CommonLibsCpp.sln.targets
+		.github\workflows\build.yml = .github\workflows\build.yml
 		Common-Libs-Cpp-Release-Notes.md = Common-Libs-Cpp-Release-Notes.md
 		CommonLibsCpp.sln.DotSettings = CommonLibsCpp.sln.DotSettings
-		Jenkinsfile = Jenkinsfile
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -44,7 +44,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		        SolutionGuid = {52D03EF5-C1D6-4424-B823-0AC024D450B2}
 		SolutionGuid = {EE1751E0-E2FB-4AC5-89AD-FFBF324DF18A}
 	EndGlobalSection
 EndGlobal

@@ -6,29 +6,26 @@
 
 #include "spdlog/sinks/sink.h"
 
-namespace ed
+namespace ed::model
 {
-    namespace model
-    {
-        class LogBuffer : public spdlog::sinks::sink
-        {
-        public:
-            LogBuffer() = default;
-            std::vector<std::wstring> GetAndClearNextQueueChunk();
+	class LogBuffer : public spdlog::sinks::sink
+	{
+	public:
+		LogBuffer() = default;
+		std::vector<std::wstring> GetAndClearNextQueueChunk();
 
-            void log(const spdlog::details::log_msg& msg) override;
+		void log(const spdlog::details::log_msg& msg) override;
 
-            void flush() override
-            {
-            }
+		void flush() override
+		{
+		}
 
-        protected:
-            void Put(const std::string& val);
-        private:
-            std::vector<std::wstring> m_queue;
-            mutable std::recursive_mutex m_queueGuard;;
-        };
-    }
+	protected:
+		void Put(const std::string& val);
+	private:
+		std::vector<std::wstring> m_queue;
+		mutable std::recursive_mutex m_queueGuard;
+	};
 }
 
 
@@ -44,7 +41,8 @@ inline std::vector<std::wstring> ed::model::LogBuffer::GetAndClearNextQueueChunk
 
 inline void ed::model::LogBuffer::log(const spdlog::details::log_msg& msg)
 {
-    std::stringstream ss(msg.formatted.str());
+    const std::string text(msg.payload.begin(), msg.payload.end());
+	std::stringstream ss(text);
     std::string line;
     while (std::getline(ss, line))
     {

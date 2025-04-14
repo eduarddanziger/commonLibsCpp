@@ -11,6 +11,8 @@
 #include "LogBuffer.h"
 
 #include <spdlog/sinks/dist_sink.h>
+#include <spdlog/async_logger.h>
+#include <spdlog/sinks/rotating_file_sink.h>
 #include <utility>
 
 // ReSharper disable CppClangTidyClangDiagnosticPragmaMessages
@@ -51,6 +53,7 @@ namespace ed
         private:
             std::shared_ptr<spdlog::logger> spdLogger_;
 
+            std::shared_ptr<spdlog::details::thread_pool> threadPool_;
             std::shared_ptr<LogBuffer> spLogBuffer_;
             std::filesystem::path pathName_;
             bool logIsToBeReinitialized_ = true;
@@ -113,9 +116,17 @@ inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& d
         {
             distributedSink->add_sink(spLogBuffer_);
         }
+
+        threadPool_ = std::make_shared<spdlog::details::thread_pool>(65536, 2);
+
+        // Create an async_logger using that custom thread pool
         spdLogger_ = std::make_shared<spdlog::async_logger>(
-            RESOURCE_FILENAME_ATTRIBUTE, distributedSink, 65536, spdlog::async_overflow_policy::block_retry, nullptr,
-            std::chrono::seconds(1));
+            RESOURCE_FILENAME_ATTRIBUTE,
+            distributedSink,
+            threadPool_,
+            spdlog::async_overflow_policy::block
+        );
+
         register_logger(spdLogger_);
 
         spdlog::set_pattern(std::string("%Y-%m-%d") + delimiterBetweenDateAndTime + "%H:%M:%S.%f %L [%t] %v");
