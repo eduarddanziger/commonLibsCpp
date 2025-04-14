@@ -35,6 +35,9 @@ jobs:
     - name: Configure MSBuild
       run: nuget restore CommonLibsCpp.sln
 
+    - name: Integrate vcpkg with MSBuild
+      run: vcpkg integrate install
+
     - name: Build with MSBuild
       run: msbuild /t:ValidateSolution /p:Configuration=Release
 
