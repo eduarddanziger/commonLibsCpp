@@ -7,10 +7,6 @@ on:
     tags:
       - 'Release-*'
 
-permissions:
-  packages: write
-  contents: write
-
 jobs:
   build:
     runs-on: windows-latest
@@ -48,7 +44,7 @@ jobs:
     - name: Push NuGet to GitHub Packages
       env:
         NUGET_SOURCE: https://nuget.pkg.github.com/eduarddanziger/index.json
-        GITHUB_TOKEN: ${{ secrets.NUGET_AUTH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.NUGET_ONLY_PAT }}
       run: |
         Get-ChildItem artifacts\*.nupkg | ForEach-Object { 
           dotnet nuget push $_.FullName `
