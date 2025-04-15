@@ -10,7 +10,7 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>Common-purpose header-only Lib</description>
         <copyright>Copyright 2024-2025</copyright>
-        <tags>native, XFS</tags>
+        <tags>native, C++20</tags>
 	    <repository type="git" url="https://github.com/eduarddanziger/commonLibsCpp" />
         <dependencies>
         </dependencies>
