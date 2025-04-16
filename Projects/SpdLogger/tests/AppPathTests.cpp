@@ -12,7 +12,7 @@ namespace ed::tests
 	class AppPathInherited : public utility::AppPath
 	{
 		public:
-			using utility::AppPath::GetOwnProgramDataPath;
+			using AppPath::GetOwnProgramDataPath;
 	};
 
 	TEST_CLASS(AppPathTests)
