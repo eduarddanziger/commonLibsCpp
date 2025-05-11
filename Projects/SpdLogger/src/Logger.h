@@ -13,6 +13,7 @@
 #include <spdlog/sinks/dist_sink.h>
 #include <spdlog/async_logger.h>
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include <utility>
 
 // ReSharper disable CppClangTidyClangDiagnosticPragmaMessages
@@ -44,11 +45,16 @@ namespace ed
             ~Logger() = default;
 
             static Logger& Inst();
+
             void SetPathName(const std::filesystem::path& fileName);
             [[nodiscard]] std::filesystem::path GetPathName() const;
             [[nodiscard]] std::wstring GetDir() const;
 
+            void SetOutputToConsole(bool isOutputToConsole);
+            [[nodiscard]] bool IsOutputToConsole() const { return isOutputToConsole_; }
+
             void SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer);
+
             std::shared_ptr<spdlog::logger> L(const std::string& delimiterBetweenDateAndTime = " ");
         private:
             std::shared_ptr<spdlog::logger> spdLogger_;
@@ -57,6 +63,7 @@ namespace ed
             std::shared_ptr<LogBuffer> spLogBuffer_;
             std::filesystem::path pathName_;
             bool logIsToBeReinitialized_ = true;
+			bool isOutputToConsole_ = false;
         };
     }
 }
@@ -101,6 +108,16 @@ inline void ed::model::Logger::SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer
     logIsToBeReinitialized_ = true;
 }
 
+void ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
+{
+    if (isOutputToConsole_ != isOutputToConsole)
+    {
+        isOutputToConsole_ = isOutputToConsole;
+        logIsToBeReinitialized_ = true;
+    }
+}
+
+
 inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& delimiterBetweenDateAndTime)
 {
     if (logIsToBeReinitialized_)
@@ -116,6 +133,12 @@ inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& d
         {
             distributedSink->add_sink(spLogBuffer_);
         }
+
+		if (isOutputToConsole_)
+		{
+			const auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+			distributedSink->add_sink(consoleSink);
+		}
 
         threadPool_ = std::make_shared<spdlog::details::thread_pool>(65536, 2);
 
