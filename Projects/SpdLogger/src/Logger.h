@@ -127,7 +127,8 @@ inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& d
             spdlog::async_overflow_policy::block
         );
 
-        register_logger(spdLogger_);
+        spdlog::register_logger(spdLogger_);
+        spdlog::set_default_logger(spdLogger_);
 
         spdlog::set_pattern(std::string("%Y-%m-%d") + delimiterBetweenDateAndTime + "%H:%M:%S.%f %L [%t] %v");
         spdlog::set_level(spdlog::level::debug);
@@ -142,7 +143,5 @@ inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& d
 }
 
 
-// ReSharper disable once CppInconsistentNaming
-//inline auto SPD_L(ed::model::Logger::Inst().L()); // inline variable, C++17
 #define SPD_L ed::model::Logger::Inst().L()
 #define SPD_LT ed::model::Logger::Inst().L("T")
