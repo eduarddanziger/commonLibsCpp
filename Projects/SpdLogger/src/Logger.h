@@ -108,7 +108,7 @@ inline void ed::model::Logger::SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer
     logIsToBeReinitialized_ = true;
 }
 
-void ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
+inline void ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
 {
     if (isOutputToConsole_ != isOutputToConsole)
     {
