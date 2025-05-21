@@ -42,9 +42,12 @@ namespace ed
         private:
             Logger() = default;
         public:
-            ~Logger() = default;
+            ~Logger();
 
             static Logger& Inst();
+
+			void Init();
+			void Free();
 
             void SetPathName(const std::filesystem::path& fileName);
             [[nodiscard]] std::filesystem::path GetPathName() const;
@@ -53,21 +56,33 @@ namespace ed
             void SetOutputToConsole(bool isOutputToConsole);
             [[nodiscard]] bool IsOutputToConsole() const { return isOutputToConsole_; }
 
+            void SetDelimiterBetweenDateAndTime(const std::string& delimiterBetweenDateAndTime = " ");
+            [[nodiscard]] std::string GetDelimiterBetweenDateAndTime() const;
+
             void SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer);
 
-            std::shared_ptr<spdlog::logger> L(const std::string& delimiterBetweenDateAndTime = " ");
+            std::shared_ptr<spdlog::logger> L();
         private:
-            std::shared_ptr<spdlog::logger> spdLogger_;
-
-            std::shared_ptr<spdlog::details::thread_pool> threadPool_;
             std::shared_ptr<LogBuffer> spLogBuffer_;
             std::filesystem::path pathName_;
             bool logIsToBeReinitialized_ = true;
 			bool isOutputToConsole_ = false;
+            std::string delimiterBetweenDateAndTime_ = " ";
         };
     }
 }
 
+
+inline void ed::model::Logger::Free()
+{
+	spdlog::shutdown();
+	logIsToBeReinitialized_ = true;
+}
+
+inline ed::model::Logger::~Logger()
+{
+    spdlog::shutdown();
+}
 
 inline ed::model::Logger& ed::model::Logger::Inst()
 {
@@ -102,6 +117,20 @@ inline std::wstring ed::model::Logger::GetDir() const
 	return pathName_;
 }
 
+inline void ed::model::Logger::SetDelimiterBetweenDateAndTime(const std::string& delimiterBetweenDateAndTime)
+{
+    if (delimiterBetweenDateAndTime_ != delimiterBetweenDateAndTime)
+    {
+        delimiterBetweenDateAndTime_ = delimiterBetweenDateAndTime;
+        logIsToBeReinitialized_ = true;
+	}
+}
+
+inline std::string ed::model::Logger::GetDelimiterBetweenDateAndTime() const
+{
+    return delimiterBetweenDateAndTime_;
+}
+
 inline void ed::model::Logger::SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer)
 {
     spLogBuffer_ = std::move(logBuffer);
@@ -118,51 +147,61 @@ inline void ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
 }
 
 
-inline std::shared_ptr<spdlog::logger> ed::model::Logger::L(const std::string& delimiterBetweenDateAndTime)
+inline void ed::model::Logger::Init()
 {
-    if (logIsToBeReinitialized_)
-    {
-        auto distributedSink = std::make_shared<spdlog::sinks::dist_sink_st>();
-        if (!pathName_.empty())
-        {
-            const auto rotatingFileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
-                pathName_.string(), 1024 * 1024, 10);
-            distributedSink->add_sink(rotatingFileSink);
-        }
-        if (spLogBuffer_ != nullptr)
-        {
-            distributedSink->add_sink(spLogBuffer_);
-        }
+	if (logIsToBeReinitialized_)
+	{
+		spdlog::shutdown();
 
-		if (isOutputToConsole_)
 		{
-			const auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-			distributedSink->add_sink(consoleSink);
+			auto distributedSink = std::make_shared<spdlog::sinks::dist_sink_st>();
+			if (!pathName_.empty())
+			{
+				const auto rotatingFileSink = std::make_shared<spdlog::sinks::rotating_file_sink_mt>(
+					pathName_.string(), 1024 * 1024, 10);
+				distributedSink->add_sink(rotatingFileSink);
+			}
+			if (spLogBuffer_ != nullptr)
+			{
+				distributedSink->add_sink(spLogBuffer_);
+			}
+
+			if (isOutputToConsole_)
+			{
+				const auto consoleSink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+				distributedSink->add_sink(consoleSink);
+			}
+
+			auto threadPool = std::make_shared<
+				spdlog::details::thread_pool>(65536, 2);
+
+			// Create an async_logger using that custom thread pool
+			const auto spdLogger = std::make_shared<spdlog::async_logger>(
+				RESOURCE_FILENAME_ATTRIBUTE,
+				distributedSink,
+				threadPool,
+				spdlog::async_overflow_policy::block
+			);
+
+			spdlog::register_logger(spdLogger);
+			spdlog::set_default_logger(spdLogger);
 		}
 
-        threadPool_ = std::make_shared<spdlog::details::thread_pool>(65536, 2);
+		spdlog::set_pattern(std::string("%Y-%m-%d") + delimiterBetweenDateAndTime_ + "%H:%M:%S.%f %L [%t] %v");
+		spdlog::set_level(spdlog::level::debug);
+		{
+			std::ostringstream oss;
+			oss << "Log for " << RESOURCE_FILENAME_ATTRIBUTE << ".exe " << ASSEMBLY_VERSION_ATTRIBUTE << " initialized.";
+			spdlog::info(oss.str().c_str());
+		}
+		logIsToBeReinitialized_ = false;
+	}
+}
 
-        // Create an async_logger using that custom thread pool
-        spdLogger_ = std::make_shared<spdlog::async_logger>(
-            RESOURCE_FILENAME_ATTRIBUTE,
-            distributedSink,
-            threadPool_,
-            spdlog::async_overflow_policy::block
-        );
-
-        spdlog::register_logger(spdLogger_);
-        spdlog::set_default_logger(spdLogger_);
-
-        spdlog::set_pattern(std::string("%Y-%m-%d") + delimiterBetweenDateAndTime + "%H:%M:%S.%f %L [%t] %v");
-        spdlog::set_level(spdlog::level::debug);
-        {
-            std::ostringstream oss;
-            oss << "Log for " << RESOURCE_FILENAME_ATTRIBUTE << ".exe " << ASSEMBLY_VERSION_ATTRIBUTE << " initialized.";
-            spdLogger_->info(oss.str().c_str());
-        }
-        logIsToBeReinitialized_ = false;
-    }
-    return spdLogger_;
+inline std::shared_ptr<spdlog::logger> ed::model::Logger::L()
+{
+    Init();
+    return spdlog::default_logger();
 }
 
 
