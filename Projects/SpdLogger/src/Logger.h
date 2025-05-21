@@ -68,6 +68,7 @@ namespace ed
             bool logIsToBeReinitialized_ = true;
 			bool isOutputToConsole_ = false;
             std::string delimiterBetweenDateAndTime_ = " ";
+            std::shared_ptr<spdlog::details::thread_pool> threadPoolSmartPtr_;
         };
     }
 }
@@ -171,14 +172,14 @@ inline void ed::model::Logger::Init()
 				distributedSink->add_sink(consoleSink);
 			}
 
-			auto threadPool = std::make_shared<
+			threadPoolSmartPtr_ = std::make_shared<
 				spdlog::details::thread_pool>(65536, 2);
 
 			// Create an async_logger using that custom thread pool
 			const auto spdLogger = std::make_shared<spdlog::async_logger>(
 				RESOURCE_FILENAME_ATTRIBUTE,
 				distributedSink,
-				threadPool,
+				threadPoolSmartPtr_,
 				spdlog::async_overflow_policy::block
 			);
 
