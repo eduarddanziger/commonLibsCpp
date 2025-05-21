@@ -42,7 +42,7 @@ namespace ed
         private:
             Logger() = default;
         public:
-            ~Logger();
+            ~Logger() = default;
 
             static Logger& Inst();
 
@@ -74,12 +74,6 @@ namespace ed
 }
 
 
-inline ed::model::Logger::~Logger()
-{
-	spdlog::info("Log for {}, version {} finished.", RESOURCE_FILENAME_ATTRIBUTE, ASSEMBLY_VERSION_ATTRIBUTE);
-	spdlog::shutdown();
-}
-
 inline ed::model::Logger& ed::model::Logger::Inst()
 {
     static Logger logger;
@@ -89,7 +83,7 @@ inline ed::model::Logger& ed::model::Logger::Inst()
 inline ed::model::Logger& ed::model::Logger::SetPathName(const std::filesystem::path& fileName)
 {
     pathName_ = fileName;
-    logIsToBeReinitialized_ = true;
+	Free();
 	return *this;
 }
 
@@ -120,7 +114,7 @@ inline ed::model::Logger& ed::model::Logger::SetDelimiterBetweenDateAndTime(
     if (delimiterBetweenDateAndTime_ != delimiterBetweenDateAndTime)
     {
         delimiterBetweenDateAndTime_ = delimiterBetweenDateAndTime;
-        logIsToBeReinitialized_ = true;
+		Free();
 	}
 	return *this;
 }
@@ -133,7 +127,7 @@ inline std::string ed::model::Logger::GetDelimiterBetweenDateAndTime() const
 inline void ed::model::Logger::SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer)
 {
     spLogBuffer_ = std::move(logBuffer);
-    logIsToBeReinitialized_ = true;
+	Free();
 }
 
 inline ed::model::Logger& ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
@@ -141,8 +135,8 @@ inline ed::model::Logger& ed::model::Logger::SetOutputToConsole(bool isOutputToC
     if (isOutputToConsole_ != isOutputToConsole)
     {
         isOutputToConsole_ = isOutputToConsole;
-        logIsToBeReinitialized_ = true;
-    }
+		Free();
+	}
 	return *this;
 }
 
@@ -196,6 +190,10 @@ inline void ed::model::Logger::Init()
 
 inline void ed::model::Logger::Free()
 {
+	if (logIsToBeReinitialized_)
+	{
+		return;
+	}
 	spdlog::info("Log for {}, version {} freed.", RESOURCE_FILENAME_ATTRIBUTE, ASSEMBLY_VERSION_ATTRIBUTE);
 	spdlog::shutdown();
 	logIsToBeReinitialized_ = true;
