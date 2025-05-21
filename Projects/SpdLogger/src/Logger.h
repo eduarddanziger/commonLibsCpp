@@ -49,14 +49,14 @@ namespace ed
 			void Init();
 			void Free();
 
-            void SetPathName(const std::filesystem::path& fileName);
+            Logger& SetPathName(const std::filesystem::path& fileName);
             [[nodiscard]] std::filesystem::path GetPathName() const;
             [[nodiscard]] std::wstring GetDir() const;
 
-            void SetOutputToConsole(bool isOutputToConsole);
+            Logger& SetOutputToConsole(bool isOutputToConsole);
             [[nodiscard]] bool IsOutputToConsole() const { return isOutputToConsole_; }
 
-            void SetDelimiterBetweenDateAndTime(const std::string& delimiterBetweenDateAndTime = " ");
+            Logger& SetDelimiterBetweenDateAndTime(const std::string& delimiterBetweenDateAndTime = " ");
             [[nodiscard]] std::string GetDelimiterBetweenDateAndTime() const;
 
             void SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer);
@@ -73,15 +73,10 @@ namespace ed
 }
 
 
-inline void ed::model::Logger::Free()
-{
-	spdlog::shutdown();
-	logIsToBeReinitialized_ = true;
-}
-
 inline ed::model::Logger::~Logger()
 {
-    spdlog::shutdown();
+	spdlog::info("Log for {}, version {} finished.", RESOURCE_FILENAME_ATTRIBUTE, ASSEMBLY_VERSION_ATTRIBUTE);
+	spdlog::shutdown();
 }
 
 inline ed::model::Logger& ed::model::Logger::Inst()
@@ -90,10 +85,11 @@ inline ed::model::Logger& ed::model::Logger::Inst()
     return logger;
 }
 
-inline void ed::model::Logger::SetPathName(const std::filesystem::path& fileName)
+inline ed::model::Logger& ed::model::Logger::SetPathName(const std::filesystem::path& fileName)
 {
     pathName_ = fileName;
     logIsToBeReinitialized_ = true;
+	return *this;
 }
 
 inline std::filesystem::path ed::model::Logger::GetPathName() const
@@ -117,13 +113,15 @@ inline std::wstring ed::model::Logger::GetDir() const
 	return pathName_;
 }
 
-inline void ed::model::Logger::SetDelimiterBetweenDateAndTime(const std::string& delimiterBetweenDateAndTime)
+inline ed::model::Logger& ed::model::Logger::SetDelimiterBetweenDateAndTime(
+	const std::string& delimiterBetweenDateAndTime)
 {
     if (delimiterBetweenDateAndTime_ != delimiterBetweenDateAndTime)
     {
         delimiterBetweenDateAndTime_ = delimiterBetweenDateAndTime;
         logIsToBeReinitialized_ = true;
 	}
+	return *this;
 }
 
 inline std::string ed::model::Logger::GetDelimiterBetweenDateAndTime() const
@@ -137,13 +135,14 @@ inline void ed::model::Logger::SetLogBuffer(std::shared_ptr<LogBuffer> logBuffer
     logIsToBeReinitialized_ = true;
 }
 
-inline void ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
+inline ed::model::Logger& ed::model::Logger::SetOutputToConsole(bool isOutputToConsole)
 {
     if (isOutputToConsole_ != isOutputToConsole)
     {
         isOutputToConsole_ = isOutputToConsole;
         logIsToBeReinitialized_ = true;
     }
+	return *this;
 }
 
 
@@ -189,13 +188,16 @@ inline void ed::model::Logger::Init()
 
 		spdlog::set_pattern(std::string("%Y-%m-%d") + delimiterBetweenDateAndTime_ + "%H:%M:%S.%f %L [%t] %v");
 		spdlog::set_level(spdlog::level::debug);
-		{
-			std::ostringstream oss;
-			oss << "Log for " << RESOURCE_FILENAME_ATTRIBUTE << ".exe " << ASSEMBLY_VERSION_ATTRIBUTE << " initialized.";
-			spdlog::info(oss.str().c_str());
-		}
+		spdlog::info("Log for {}, version {} initialized.", RESOURCE_FILENAME_ATTRIBUTE, ASSEMBLY_VERSION_ATTRIBUTE);
 		logIsToBeReinitialized_ = false;
 	}
+}
+
+inline void ed::model::Logger::Free()
+{
+	spdlog::info("Log for {}, version {} freed.", RESOURCE_FILENAME_ATTRIBUTE, ASSEMBLY_VERSION_ATTRIBUTE);
+	spdlog::shutdown();
+	logIsToBeReinitialized_ = true;
 }
 
 inline std::shared_ptr<spdlog::logger> ed::model::Logger::L()
