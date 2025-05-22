@@ -11,7 +11,19 @@ Released on $date$
 ~~~
 
 ## Change
-- SpdLog NuGet removed, latest vcpkg addedd
+- StringUtils.h removed
+- Logger extended by Init, Free; Console output added
+
+
+
+2.2.0
+--------
+~~~
+Released on 16.04.2025
+~~~
+
+## Change
+- SpdLog NuGet removed, latest vcpkg added
 - String utilities in a new StringUtils.h
 
 2.0.1

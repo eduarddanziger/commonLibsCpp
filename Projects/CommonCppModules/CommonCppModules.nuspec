@@ -19,7 +19,6 @@
         <file src="TimeUtils.h" target="\lib\native\include\" />
         <file src="PrefixStream.h" target="\lib\native\include\" />
         <file src="any_string_array.h" target="\lib\native\include\" />
-        <file src="StringUtils.h" target="\lib\native\include\" />
         <file src="CommonCppModules.targets" target="\build\native\" />
     </files>
 </package>
